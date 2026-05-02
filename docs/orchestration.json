@@ -1,0 +1,11 @@
+{
+  "project": "gistcaster",
+  "lanes": [
+    { "name": "capture", "owner": "core", "status": "mvp", "outputs": ["source record"] },
+    { "name": "library", "owner": "core", "status": "mvp", "outputs": ["index.json", "brief markdown"] },
+    { "name": "render", "owner": "core", "status": "mvp", "outputs": ["brief", "oss-ideas qualification"] },
+    { "name": "safety", "owner": "quality", "status": "mvp", "outputs": ["tests", "smoke", "validation"] }
+  ],
+  "commands": ["npm test", "npm run check", "npm run build", "npm run smoke", "bash scripts/validate.sh"],
+  "networkPolicy": "URL network access only happens when users pass --fetch; fixtures are preferred for tests."
+}
