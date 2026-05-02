@@ -1,0 +1,5 @@
+node_modules/
+.gistcaster/
+.tmp/
+.DS_Store
+*.log
