@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+LIB="$ROOT/.tmp/smoke-lib"
+OUT="$ROOT/.tmp/smoke-qualification.md"
+rm -rf "$LIB" "$OUT"
+FILE_JSON="$(node "$ROOT/src/cli.js" capture "$ROOT/fixtures/files/research-note.md" --library "$LIB")"
+URL_JSON="$(node "$ROOT/src/cli.js" capture "https://example.test/research" --fixture "$ROOT/fixtures/url/example.html" --library "$LIB")"
+FILE_ID="$(node -e "console.log(JSON.parse(process.argv[1]).id)" "$FILE_JSON")"
+URL_ID="$(node -e "console.log(JSON.parse(process.argv[1]).id)" "$URL_JSON")"
+node "$ROOT/src/cli.js" brief "$FILE_ID" --library "$LIB" > "$ROOT/.tmp/file-brief.md"
+node "$ROOT/src/cli.js" export "$FILE_ID" "$URL_ID" --library "$LIB" --output "$OUT" --title "Smoke qualification"
+grep -q "Smoke qualification" "$OUT"
+grep -q "Fixture URL Research" "$OUT"
+grep -q "Network: none" "$ROOT/.tmp/file-brief.md"
+echo "smoke ok: $FILE_ID $URL_ID"
