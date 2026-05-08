@@ -1,0 +1,6 @@
+node_modules/
+dist/
+coverage/
+.gistcaster/
+*.tgz
+.DS_Store
