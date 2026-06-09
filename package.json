@@ -21,7 +21,8 @@
     "check": "node --check src/*.js && node --test",
     "smoke": "node src/cli.js brief tests/fixtures/local-note.md --out /tmp/gistcaster-smoke.md && test -s /tmp/gistcaster-smoke.md",
     "package:smoke": "npm pack --dry-run",
-    "release:check": "npm run check && npm run smoke && npm run package:smoke"
+    "release:check": "npm run check && npm run build && npm run smoke && npm run package:smoke",
+    "build": "node --check src/*.js"
   },
   "keywords": [
     "research",
