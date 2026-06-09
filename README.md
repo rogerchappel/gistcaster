@@ -76,7 +76,19 @@ bash scripts/validate.sh
 ```
 
 PRs should be small, task-linked, and include fixtures for parser/exporter behavior.
+## Release readiness
+
+Run the same checks expected before opening or cutting a release:
+
+```sh
+npm run check
+npm run test
+npm run smoke
+npm run package:smoke
+npm run release:check
+```
+
+Use `npm pack --dry-run` to confirm the published package contains the CLI/runtime files plus README, license, security, support, and release notes.
 
 ## License
-
 MIT
