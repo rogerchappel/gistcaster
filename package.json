@@ -34,9 +34,17 @@
   "author": "Roger Chappel",
   "license": "MIT",
   "bin": {
-    "gistcaster": "./src/cli.js"
+    "gistcaster": "src/cli.js"
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rogerchappel/gistcaster.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rogerchappel/gistcaster/issues"
+  },
+  "homepage": "https://github.com/rogerchappel/gistcaster#readme"
 }
