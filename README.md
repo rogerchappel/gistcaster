@@ -21,6 +21,12 @@ npm link
 gistcaster brief examples/local-brief.md --out brief.md
 ```
 
+Run the checked-in local demo:
+
+```sh
+bash demo/run-local-research-brief.sh
+```
+
 Print instead of only writing a path:
 
 ```sh
@@ -76,6 +82,11 @@ bash scripts/validate.sh
 ```
 
 PRs should be small, task-linked, and include fixtures for parser/exporter behavior.
+
+Promotion and demo material:
+
+- `docs/tutorials/local-research-packet.md`
+- `docs/promo/local-research-hooks.md`
 
 ## License
 
