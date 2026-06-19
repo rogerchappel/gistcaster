@@ -21,6 +21,12 @@ npm link
 gistcaster brief examples/local-brief.md --out brief.md
 ```
 
+Run the checked-in local demo:
+
+```sh
+bash demo/run-local-research-brief.sh
+```
+
 Print instead of only writing a path:
 
 ```sh
@@ -104,6 +110,11 @@ npm run release:check
 ```
 
 Run the narrower commands while iterating, then finish with the broadest available check before opening a PR.
+
+Promotion and demo material:
+
+- `docs/tutorials/local-research-packet.md`
+- `docs/promo/local-research-hooks.md`
 
 ## License
 MIT
