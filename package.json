@@ -27,7 +27,8 @@
     "smoke": "node src/cli.js brief tests/fixtures/local-note.md --out /tmp/gistcaster-smoke.md && test -s /tmp/gistcaster-smoke.md",
     "package:smoke": "bash scripts/package-smoke.sh",
     "release:check": "npm run check && npm run build && npm run smoke && npm run package:smoke",
-    "build": "node --check src/*.js"
+    "build": "node --check src/*.js",
+    "lint": "npm run check"
   },
   "keywords": [
     "research",
