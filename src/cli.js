@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import { realpathSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
 import { parseArgs, usage } from './args.js';
 import { buildBrief } from './brief.js';
 import { captureInputs } from './capture.js';
@@ -29,7 +31,7 @@ export async function main(argv = process.argv.slice(2), io = { stdout: process.
   return 0;
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (process.argv[1] && import.meta.url === pathToFileURL(realpathSync(process.argv[1])).href) {
   main().then((code) => { process.exitCode = code; }).catch((error) => {
     console.error(error.message || error);
     process.exitCode = 1;
