@@ -12,8 +12,8 @@
       ],
       [
         "npm",
-        "pack",
-        "--dry-run"
+        "run",
+        "package:smoke"
       ]
     ]
   },

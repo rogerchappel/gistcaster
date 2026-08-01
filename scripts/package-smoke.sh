@@ -8,7 +8,12 @@ tmp_dir="$(mktemp -d)"
 trap 'rm -rf "$tmp_dir"' EXIT
 
 pack_json="$tmp_dir/pack.json"
-npm pack --dry-run --json >"$pack_json"
+package_dir="$tmp_dir/package"
+install_prefix="$tmp_dir/prefix"
+outside_dir="$tmp_dir/outside"
+mkdir -p "$package_dir" "$outside_dir"
+
+npm pack --json --pack-destination "$package_dir" >"$pack_json"
 
 node - "$pack_json" <<'NODE'
 const fs = require('node:fs');
@@ -32,4 +37,14 @@ if (missing.length) {
 }
 NODE
 
-node src/cli.js help >/dev/null
+tarball="$(node -e "const p = require(process.argv[1]); process.stdout.write(p[0].filename)" "$pack_json")"
+npm install --global --prefix "$install_prefix" "$package_dir/$tarball"
+
+fixture="$outside_dir/local-note.md"
+output="$outside_dir/brief.md"
+printf '# Package smoke\n\nInstalled CLI input.\n' >"$fixture"
+
+cd "$outside_dir"
+"$install_prefix/bin/gistcaster" brief "$fixture" --out "$output"
+test -s "$output"
+grep -q 'Installed CLI input' "$output"
