@@ -8,9 +8,16 @@ Inspired by the PRD's adjacent research: `steipete/summarize`, a URL/YouTube/pod
 
 ## Install
 
+The package is not published to the npm registry. Install the current source
+archive directly from GitHub:
+
 ```sh
-npm install -g gistcaster
-# or from a checkout
+npm install --global https://github.com/rogerchappel/gistcaster/archive/refs/heads/main.tar.gz
+```
+
+For development from a checkout:
+
+```sh
 npm install
 npm link
 ```
@@ -94,7 +101,11 @@ npm run package:smoke
 npm run release:check
 ```
 
-Use `npm pack --dry-run` to confirm the published package contains the CLI/runtime files plus README, license, security, support, and release notes.
+`npm run package:smoke` creates the same npm tarball attached to releases,
+installs it into a clean temporary global prefix, and runs the installed
+`gistcaster` binary from outside the checkout. It also confirms the package
+contains the CLI/runtime files plus README, license, security, support, and
+release notes.
 
 ## Development
 
