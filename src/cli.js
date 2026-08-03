@@ -8,7 +8,14 @@ import { renderBrief } from './exporters.js';
 import { writeBrief } from './library.js';
 
 export async function main(argv = process.argv.slice(2), io = { stdout: process.stdout, stderr: process.stderr }) {
-  const { command, inputs, options } = parseArgs(argv);
+  let parsed;
+  try {
+    parsed = parseArgs(argv);
+  } catch (error) {
+    io.stderr.write(`${error.message}\n`);
+    return 1;
+  }
+  const { command, inputs, options } = parsed;
   if (command === 'help') {
     io.stdout.write(usage());
     return 0;
