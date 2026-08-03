@@ -54,6 +54,10 @@ gistcaster brief https://example.com/research --fetch-url --out web-brief.md
 
 Without `--fetch-url`, URL inputs are recorded as source metadata only.
 
+Each option may be passed once. `--json` is shorthand for `--format json` and
+cannot be combined with `--format`. The `--out`, `--library`, `--title`, and
+`--format` options require a following value.
+
 ## What the brief contains
 
 - Source list with locator, fetch status, metadata, and content hash when available.
