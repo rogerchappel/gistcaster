@@ -33,7 +33,7 @@ export async function main(argv = process.argv.slice(2), io = { stdout: process.
   const brief = buildBrief(captures, options);
   const rendered = renderBrief(brief, options.format || 'markdown');
   if (options.stdout) io.stdout.write(rendered);
-  const path = await writeBrief({ brief, rendered, output: options.output, library: options.library });
+  const path = await writeBrief({ brief, rendered, output: options.output, library: options.library, format: options.format || 'markdown' });
   if (!options.stdout) io.stdout.write(`${path}\n`);
   return 0;
 }

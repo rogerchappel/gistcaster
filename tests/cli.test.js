@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, rm, symlink } from 'node:fs/promises';
+import { mkdtemp, readFile, readdir, rm, symlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -70,5 +70,49 @@ test('CLI supports value options, boolean options, and the json alias', async ()
   assert.equal(result.status, 0, result.stderr);
   assert.equal(JSON.parse(result.stdout).title, 'Custom title');
   assert.match(await readFile(out, 'utf8'), /"title": "Custom title"/);
+  await rm(dir, { recursive: true, force: true });
+});
+
+test('CLI uses a JSON extension for implicit JSON output', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'gistcaster-json-library-test-'));
+  const library = join(dir, 'library');
+  const result = runCli('brief', 'tests/fixtures/local-note.md', '--library', library, '--json');
+
+  assert.equal(result.status, 0, result.stderr);
+  const output = result.stdout.trim();
+  assert.equal(output.endsWith('.json'), true);
+  assert.equal(JSON.parse(await readFile(output, 'utf8')).title, 'Compiler Flag Research');
+  await rm(dir, { recursive: true, force: true });
+});
+
+test('CLI preserves repeated implicit captures with deterministic suffixes', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'gistcaster-collision-test-'));
+  const library = join(dir, 'library');
+  const args = ['brief', 'tests/fixtures/local-note.md', '--library', library];
+  const first = runCli(...args);
+  const second = runCli(...args);
+
+  assert.equal(first.status, 0, first.stderr);
+  assert.equal(second.status, 0, second.stderr);
+  assert.notEqual(first.stdout, second.stdout);
+  assert.match(second.stdout.trim(), /-2\.md$/);
+  assert.deepEqual((await readdir(library)).sort(), [
+    first.stdout.trim().split('/').at(-1),
+    second.stdout.trim().split('/').at(-1)
+  ].sort());
+  await rm(dir, { recursive: true, force: true });
+});
+
+test('CLI keeps exact --out behavior, including replacing an existing file', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'gistcaster-explicit-output-test-'));
+  const out = join(dir, 'chosen.extension');
+  const first = runCli('brief', 'tests/fixtures/local-note.md', '--out', out);
+  const second = runCli('brief', 'tests/fixtures/local-note.md', '--title', 'Replacement', '--out', out);
+
+  assert.equal(first.status, 0, first.stderr);
+  assert.equal(second.status, 0, second.stderr);
+  assert.equal(second.stdout.trim(), out);
+  assert.match(await readFile(out, 'utf8'), /# Replacement/);
+  assert.deepEqual(await readdir(dir), ['chosen.extension']);
   await rm(dir, { recursive: true, force: true });
 });
