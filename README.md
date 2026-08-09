@@ -58,6 +58,12 @@ Each option may be passed once. `--json` is shorthand for `--format json` and
 cannot be combined with `--format`. The `--out`, `--library`, `--title`, and
 `--format` options require a following value.
 
+When `--out` is omitted, briefs are saved in `.gistcaster` (or the directory
+selected by `--library`). Markdown and `oss-ideas` captures use `.md`; JSON
+captures use `.json`. Repeated captures with the same date and title are kept
+as separate files with deterministic suffixes such as `-2` and `-3`.
+`--out` always uses the exact path supplied and replaces an existing file.
+
 ## What the brief contains
 
 - Source list with locator, fetch status, metadata, and content hash when available.
