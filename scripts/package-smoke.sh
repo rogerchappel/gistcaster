@@ -28,7 +28,9 @@ const required = [
   'LICENSE',
   'SECURITY.md',
   'CHANGELOG.md',
-  'CONTRIBUTING.md'
+  'CONTRIBUTING.md',
+  'SUPPORT.md',
+  'RELEASE_NOTES.md'
 ];
 const missing = required.filter((file) => !packed.has(file));
 if (missing.length) {
