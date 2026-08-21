@@ -2,6 +2,8 @@ import { createSourceRecord } from './source.js';
 import { assertExplicitUrlFetch } from './safety.js';
 import { extractMarkdownTitle, stripMarkdown } from './markdown.js';
 
+export const DEFAULT_URL_TIMEOUT_MS = 10_000;
+
 export async function captureUrl(input, options = {}, index = 0) {
   const safety = assertExplicitUrlFetch(input, options);
   if (!safety.allowed) {
@@ -18,10 +20,24 @@ export async function captureUrl(input, options = {}, index = 0) {
     };
   }
 
-  const response = await fetch(input, { redirect: 'follow' });
-  if (!response.ok) throw new Error(`Failed to fetch ${input}: HTTP ${response.status}`);
+  const timeoutMs = options.urlTimeoutMs ?? DEFAULT_URL_TIMEOUT_MS;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+  let response;
+  let raw;
+  try {
+    response = await fetch(input, { redirect: 'follow', signal: controller.signal });
+    if (!response.ok) throw new Error(`Failed to fetch ${input}: HTTP ${response.status}`);
+    raw = await response.text();
+  } catch (error) {
+    if (controller.signal.aborted) {
+      throw new Error(`Timed out fetching ${input} after ${timeoutMs}ms`);
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
   const contentType = response.headers.get('content-type') || '';
-  const raw = await response.text();
   const text = htmlToText(raw);
   const title = extractHtmlTitle(raw) || extractMarkdownTitle(text, input);
   return {
