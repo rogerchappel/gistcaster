@@ -54,6 +54,12 @@ gistcaster brief https://example.com/research --fetch-url --out web-brief.md
 
 Without `--fetch-url`, URL inputs are recorded as source metadata only.
 
+URL fetches have a 10-second deadline. If a server does not respond in time,
+Gistcaster cancels the request and exits nonzero with the URL in the timeout
+message. Check that the URL is reachable and retry the command; omit
+`--fetch-url` if recording source metadata without downloading content is
+sufficient.
+
 Each option may be passed once. `--json` is shorthand for `--format json` and
 cannot be combined with `--format`. The `--out`, `--library`, `--title`, and
 `--format` options require a following value.
