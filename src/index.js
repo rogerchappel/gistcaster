@@ -4,3 +4,4 @@ export { captureInputs } from './capture.js';
 export { renderBrief, renderOssIdeasQualification } from './exporters.js';
 export { writeBrief } from './library.js';
 export { isUrl, assertExplicitUrlFetch } from './safety.js';
+export { GistcasterError, invariant } from './errors.js';
