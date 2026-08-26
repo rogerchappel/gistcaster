@@ -24,11 +24,11 @@
   ],
   "scripts": {
     "test": "node --test",
-    "check": "node --check src/*.js && node --test",
+    "check": "bash scripts/syntax-check.sh && node --test",
     "smoke": "node src/cli.js brief tests/fixtures/local-note.md --out /tmp/gistcaster-smoke.md && test -s /tmp/gistcaster-smoke.md",
     "package:smoke": "bash scripts/package-smoke.sh",
     "release:check": "npm run check && npm run build && npm run smoke && npm run package:smoke",
-    "build": "node --check src/*.js",
+    "build": "bash scripts/syntax-check.sh",
     "lint": "npm run check"
   },
   "keywords": [
