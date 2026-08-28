@@ -60,6 +60,13 @@ message. Check that the URL is reachable and retry the command; omit
 `--fetch-url` if recording source metadata without downloading content is
 sufficient.
 
+Gistcaster converts `text/html` and `application/xhtml+xml` responses to
+readable text. Other `text/*`, `application/json`, and `application/*+json`
+responses preserve their body text exactly, including comparison operators.
+Charset parameters are supported and matching is case-insensitive. Binary,
+unknown, or missing content types stop with an explicit unsupported
+Content-Type error instead of treating bytes as HTML.
+
 Each option may be passed once. `--json` is shorthand for `--format json` and
 cannot be combined with `--format`. The `--out`, `--library`, `--title`, and
 `--format` options require a following value.
