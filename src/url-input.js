@@ -38,8 +38,14 @@ export async function captureUrl(input, options = {}, index = 0) {
     clearTimeout(timeout);
   }
   const contentType = response.headers.get('content-type') || '';
-  const text = htmlToText(raw);
-  const title = extractHtmlTitle(raw) || extractMarkdownTitle(text, input);
+  const mediaType = contentType.split(';', 1)[0].trim().toLowerCase();
+  const isHtml = mediaType === 'text/html' || mediaType === 'application/xhtml+xml';
+  const isText = mediaType.startsWith('text/') || mediaType === 'application/json' || mediaType.endsWith('+json');
+  if (!isHtml && !isText) {
+    throw new Error(`Unsupported Content-Type for ${input}: ${contentType || '(missing)'}`);
+  }
+  const text = isHtml ? htmlToText(raw) : raw;
+  const title = (isHtml ? extractHtmlTitle(raw) : '') || extractMarkdownTitle(text, input);
   return {
     source: createSourceRecord({
       id: `source-${index + 1}`,
