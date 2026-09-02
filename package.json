@@ -28,6 +28,7 @@
     "smoke": "node src/cli.js brief tests/fixtures/local-note.md --out /tmp/gistcaster-smoke.md && test -s /tmp/gistcaster-smoke.md",
     "demo:smoke": "bash demo/run-local-research-brief.sh",
     "package:smoke": "bash scripts/package-smoke.sh",
+    "release:tag-check": "node scripts/validate-release-tag.js",
     "release:check": "npm run check && npm run build && npm run smoke && npm run demo:smoke && npm run package:smoke",
     "build": "bash scripts/syntax-check.sh",
     "lint": "npm run check"
