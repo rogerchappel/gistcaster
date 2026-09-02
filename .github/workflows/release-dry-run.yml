@@ -37,11 +37,15 @@ jobs:
           npm --prefix /tmp/releasebox run build
       - name: ReleaseBox readiness check
         run: node /tmp/releasebox/bin/releasebox.js check .
+      - name: Verify release tag matches package version
+        run: npm run release:tag-check -- "v$(node -p 'require("./package.json").version')"
       - name: Run release checks
         run: npm run release:check
-      - name: Release notes preview
+      - name: Generate final release notes
         run: |
-          node /tmp/releasebox/bin/releasebox.js notes . > release-notes-preview.md
-          cat release-notes-preview.md
+          node /tmp/releasebox/bin/releasebox.js notes . > RELEASE_NOTES.md
+          cat RELEASE_NOTES.md
+      - name: Pack with final release notes
+        run: npm pack
       - name: Publish release notes summary
-        run: cat release-notes-preview.md >> "$GITHUB_STEP_SUMMARY"
+        run: cat RELEASE_NOTES.md >> "$GITHUB_STEP_SUMMARY"

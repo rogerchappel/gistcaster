@@ -27,3 +27,5 @@ Confirm the package includes:
 - Release notes call out breaking changes or explicitly state that there are none.
 - Security and support docs give users a clear place to report issues.
 - CI is green on the release branch.
+- The release tag is exactly `v<package.json version>`; run `npm run release:tag-check -- vX.Y.Z` before packing.
+- Generate the final `RELEASE_NOTES.md` before `npm pack` so the tarball and GitHub release use identical notes.
