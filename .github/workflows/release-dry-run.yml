@@ -38,7 +38,7 @@ jobs:
       - name: ReleaseBox readiness check
         run: node /tmp/releasebox/bin/releasebox.js check .
       - name: Verify release tag matches package version
-        run: npm run release:tag-check -- "v$(node -p \"require('./package.json').version\")"
+        run: npm run release:tag-check -- "v$(node -p 'require("./package.json").version')"
       - name: Run release checks
         run: npm run release:check
       - name: Generate final release notes
