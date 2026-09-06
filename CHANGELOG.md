@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Decode fetched text and HTML using recognized declared charsets, with explicit errors for empty or unsupported charset declarations.
+
 ## 0.1.0
 
 - Initial local-first CLI/library MVP.

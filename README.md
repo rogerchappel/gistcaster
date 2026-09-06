@@ -63,9 +63,13 @@ sufficient.
 Gistcaster converts `text/html` and `application/xhtml+xml` responses to
 readable text. Other `text/*`, `application/json`, and `application/*+json`
 responses preserve their body text exactly, including comparison operators.
-Charset parameters are supported and matching is case-insensitive. Binary,
-unknown, or missing content types stop with an explicit unsupported
-Content-Type error instead of treating bytes as HTML.
+Declared charsets are decoded with the encodings recognized by the web
+platform `TextDecoder` (case-insensitively), including UTF-8, ISO-8859-1, and
+Windows-1252. ISO-8859-1 follows the web-compatible Windows-1252 mapping.
+Responses without a charset default to UTF-8; an empty or unsupported charset
+stops with an explicit error. Binary, unknown, or missing content types stop
+with an explicit unsupported Content-Type error instead of treating bytes as
+HTML.
 
 Each option may be passed once. `--json` is shorthand for `--format json` and
 cannot be combined with `--format`. The `--out`, `--library`, `--title`, and
