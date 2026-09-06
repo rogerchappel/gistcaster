@@ -41,6 +41,45 @@ test('captures textual response bodies according to normalized Content-Type', as
   });
 });
 
+test('decodes supported declared charsets before deriving content and titles', async () => {
+  await withFixtureServer({
+    '/latin1': {
+      contentType: 'text/plain; charset=ISO-8859-1',
+      body: Buffer.from('caf\xe9 costs \x8010', 'latin1')
+    },
+    '/windows-html': {
+      contentType: 'text/html; charset="windows-1252"',
+      body: Buffer.from('<title>Cr\xe8me br\xfbl\xe9e</title><p>Price: \x8010</p>', 'latin1')
+    }
+  }, async (baseUrl) => {
+    const plain = await captureUrl(`${baseUrl}/latin1`, { fetchUrl: true });
+    assert.equal(plain.content, 'café costs €10');
+    assert.equal(plain.source.title, 'café costs €10');
+    assert.equal(plain.source.metadata.contentType, 'text/plain; charset=ISO-8859-1');
+
+    const html = await captureUrl(`${baseUrl}/windows-html`, { fetchUrl: true });
+    assert.equal(html.source.title, 'Crème brûlée');
+    assert.equal(html.content, 'Crème brûlée Price: €10');
+    assert.equal(html.source.metadata.contentType, 'text/html; charset="windows-1252"');
+  });
+});
+
+test('rejects unsupported and malformed charset declarations deterministically', async () => {
+  await withFixtureServer({
+    '/unsupported': { contentType: 'text/plain; charset=x-gistcaster-unknown', body: 'text' },
+    '/malformed': { contentType: 'text/plain; charset=', body: 'text' }
+  }, async (baseUrl) => {
+    await assert.rejects(
+      captureUrl(`${baseUrl}/unsupported`, { fetchUrl: true }),
+      /Unsupported charset for .*: x-gistcaster-unknown/
+    );
+    await assert.rejects(
+      captureUrl(`${baseUrl}/malformed`, { fetchUrl: true }),
+      /Malformed charset parameter for .*: text\/plain; charset=/
+    );
+  });
+});
+
 test('rejects unsupported and missing response Content-Types explicitly', async () => {
   await withFixtureServer({
     '/binary': { contentType: 'application/octet-stream', body: Buffer.from([0, 1, 2]) },
