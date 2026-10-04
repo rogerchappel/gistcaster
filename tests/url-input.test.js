@@ -20,6 +20,42 @@ async function withFixtureServer(routes, run) {
   }
 }
 
+async function withDelayedFixtureServer(run) {
+  let requestAborted = false;
+  const server = createServer((_request, response) => {
+    response.writeHead(200, { 'content-type': 'text/plain; charset=utf-8' });
+    response.flushHeaders();
+    response.on('close', () => {
+      if (!response.writableEnded) requestAborted = true;
+    });
+    setTimeout(() => {
+      if (!response.destroyed) response.end('too late');
+    }, 500);
+  });
+  await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const { port } = server.address();
+  try {
+    await run(`http://127.0.0.1:${port}`);
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    assert.equal(requestAborted, true, 'the delayed response should be aborted');
+  } finally {
+    server.closeAllConnections();
+    await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+  }
+}
+
+test('aborts a delayed URL response at the configured timeout', async () => {
+  await withDelayedFixtureServer(async (baseUrl) => {
+    const timeoutMs = 50;
+    const startedAt = Date.now();
+    await assert.rejects(
+      captureUrl(baseUrl, { fetchUrl: true, urlTimeoutMs: timeoutMs }),
+      (error) => error.message === `Timed out fetching ${baseUrl} after ${timeoutMs}ms`
+    );
+    assert.ok(Date.now() - startedAt < 400, 'the fetch should fail well before the server responds');
+  });
+});
+
 test('captures textual response bodies according to normalized Content-Type', async () => {
   await withFixtureServer({
     '/plain': { contentType: 'Text/Plain; charset=utf-8', body: 'score < 10 and value > 2' },
